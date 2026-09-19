@@ -1,15 +1,12 @@
 import json
 from course import Course
-from assessment import Assessment
-from datetime import date
 import os
-DEFAULT_FILE_PATH = "data.JSON"
+
+FILE_NAME = "data.JSON"
 
 
 def save_courses(file_path: str, courses: list[Course]):
-    """Converts a list of Course objects Into a list of 
-    dictionaries, then saves it to a JSON file
-    """
+    """Converts a list of Course objects Into a list of dictionaries, then saves it to a JSON file"""
     data = []
     for course in courses:
         data.append(course.to_dict())
@@ -18,24 +15,12 @@ def save_courses(file_path: str, courses: list[Course]):
 
 def load_courses(file_path: str) -> list[Course]:
     """Converts JSON into a list of Course object"""
-    course_list = []
     if not os.path.exists(file_path):
-        with open(file_path,"x") as file:
-            json.dump(course_list, file, ensure_ascii = False, indent = 4)
-    else:      
-        with open(file_path, 'r') as file:
+        with open(file_path, "x") as file:
+            json.dump([], file, ensure_ascii=False, indent=4)
+        return []
 
-            data_list = json.load(file) # parse JSON file and obtain lst[dict]
+    with open(file_path, "r", encoding="utf-8") as file:
+        data_list = json.load(file)
 
-        for course in data_list:
-
-            new_course = Course(course["name"])
-
-            for assessment in course["assessments"]:
-                new_assessment = Assessment(assessment["name"], assessment["kind"], date.fromisoformat(assessment["due_date"]), assessment["weight"])
-                new_assessment.grade_earned = assessment["grade_earned"]
-                new_assessment.is_completed = assessment["is_completed"]
-                new_course.assessments.append(new_assessment)
-            course_list.append(new_course)
-
-    return course_list
+    return [Course.from_dict(course_data) for course_data in data_list]
