@@ -30,10 +30,12 @@ class Assessment:
             raise ValueError("grade_earned cannot be negative")
         self._grade_earned = value
 
-    def update(self, name = None, due_date = None, weight = None, grade_earned = None):
+    def update(self, name=None, assessment_type=None, due_date=None, weight=None, grade_earned=None):
         """Updates the Assessment based on params"""
         if name is not None:
             self.name = name
+        if assessment_type is not None:
+            self.assessment_type = assessment_type
         if due_date is not None:
             self.due_date = due_date
         if weight is not None:
